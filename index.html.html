@@ -1,0 +1,855 @@
+<!doctype html>
+<html lang="en" data-version="rw-2025-08-08">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Runware Studio • runware:101@1</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0b0d10;--fg:#e7edf3;--muted:#9aa7b2;--card:#11151b;--edge:#1f2735;
+    --accent:#7c3aed;--ring:#9f7aea;--ok:#10b981;--err:#ef4444;--warn:#f59e0b;
+    --chip:#233049; --shadow:0 12px 36px rgba(0,0,0,.35);
+    --gridCols: 4;
+  }
+  [data-theme="light"]{
+    --bg:#f6f7fb;--fg:#0d1216;--muted:#536171;--card:#fff;--edge:#e5e9f0;
+    --accent:#6d28d9;--ring:#7c3aed;--chip:#e8eafb; --shadow:0 10px 26px rgba(0,0,0,.08);
+  }
+  *{box-sizing:border-box;font-family:Inter,system-ui,Arial,sans-serif}
+  html,body{height:100%}
+  body{margin:0;background:linear-gradient(180deg,var(--bg),#0e1117);color:var(--fg)}
+  header{position:sticky;top:0;z-index:10;padding:14px 22px;border-bottom:1px solid var(--edge);background:rgba(0,0,0,.25);backdrop-filter:blur(8px)}
+  [data-theme="light"] header{background:#fffbdcaa}
+  .wrap{max-width:1480px;margin:0 auto;padding:22px}
+  .grid{display:grid;grid-template-columns:1fr;gap:16px}
+  @media(min-width:1200px){.grid{grid-template-columns:520px 1fr}}
+  .card{background:var(--card);border:1px solid var(--edge);border-radius:16px;box-shadow:var(--shadow)}
+  .pane{padding:18px}
+  h1{margin:0;font-size:18px;letter-spacing:.2px}
+  h2{margin:0 0 8px;font-size:16px}
+  .badge{background:#182034;border:1px solid #2a3550;padding:4px 8px;border-radius:999px;font-size:11px}
+  label{display:block;font-size:12px;color:var(--muted);margin:8px 0 6px}
+  input,select,textarea{width:100%;background:#0b0f15;border:1px solid #273041;color:var(--fg);padding:11px 12px;border-radius:12px;outline:none}
+  input:focus,select:focus,textarea:focus{border-color:var(--ring);box-shadow:0 0 0 3px rgba(124,58,237,.25)}
+  .row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  .row3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
+  .btn{display:inline-flex;align-items:center;gap:8px;background:var(--accent);color:white;border:none;border-radius:12px;padding:11px 16px;font-weight:700;cursor:pointer}
+  .btn.secondary{background:#233049}
+  .btn.ghost{background:transparent;border:1px solid #2a3550}
+  .btn.warn{background:var(--warn);color:#111}
+  .btn[disabled]{opacity:.6;cursor:not-allowed}
+  .muted{color:var(--muted)}
+  .small{font-size:12px}
+  .images{display:grid;grid-template-columns:repeat(var(--gridCols),1fr);gap:12px}
+  @media(max-width:1300px){.images{grid-template-columns:repeat(3,1fr)}}
+  @media(max-width:900px){.images{grid-template-columns:repeat(2,1fr)}}
+  @media(max-width:560px){.images{grid-template-columns:1fr}}
+  .tile{position:relative;border-radius:14px;overflow:hidden;border:1px solid #263244;background:#0c1118;min-height:200px}
+  .tile img{display:block;width:100%;height:100%;object-fit:cover;cursor:zoom-in}
+  .tile .tools{position:absolute;right:8px;bottom:8px;display:flex;gap:6px}
+  .chip{background:rgba(0,0,0,.55);color:#fff;padding:6px 10px;border-radius:10px;text-decoration:none;font-size:12px;border:1px solid rgba(255,255,255,.12)}
+  .chip.btn{cursor:pointer}
+  .status{display:flex;align-items:center;gap:8px;margin-top:10px}
+  .dot{width:8px;height:8px;border-radius:999px;display:inline-block;background:var(--muted)}
+  .dot.ok{background:var(--ok)}
+  .dot.err{background:var(--err)}
+  .spinner{width:16px;height:16px;border:2px solid rgba(255,255,255,.25);border-top-color:#fff;border-radius:50%;animation:spin .9s linear infinite}
+  @keyframes spin{to{transform:rotate(360deg)}}
+  footer{padding:22px;color:#97a6b6;text-align:center}
+  .help{padding:10px 12px;border:1px dashed #2a3550;border-radius:12px;margin-top:10px}
+  details{border:1px dashed #2a3550;border-radius:12px;padding:10px 12px;margin-top:10px}
+  details>summary{cursor:pointer;color:#cbd5e1;font-weight:700}
+  .kbd{font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace;border:1px solid #2a3550;border-bottom-width:2px;border-radius:6px;padding:1px 6px;background:#0b0f15;font-size:12px}
+  .pill{display:inline-flex;gap:6px;align-items:center;border:1px solid #2a3550;border-radius:999px;padding:4px 8px;font-size:11px}
+  dialog{border:0;border-radius:16px;background:#0b0f15;color:var(--fg);padding:0;max-width:92vw}
+  dialog::backdrop{background:rgba(0,0,0,.5)}
+  .lightbox{padding:12px}
+  .lightbox img{max-width:88vw;max-height:80vh;border-radius:12px}
+  .toolbar{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+  .chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
+  .chip-toggle{border:1px solid #2a3550;background:var(--chip);color:#cbd5e1;padding:6px 10px;border-radius:999px;cursor:pointer;font-size:12px}
+  .chip-toggle.active{outline:2px solid var(--ring)}
+  .bar{height:8px;background:#1d2433;border-radius:8px;overflow:hidden}
+  .bar>span{display:block;height:100%;background:linear-gradient(90deg,var(--accent),#22d3ee)}
+  .two{display:grid;grid-template-columns:1fr auto;gap:10px;align-items:center}
+  .queue{margin-top:8px}
+  .queue .item{display:flex;justify-content:space-between;gap:10px;align-items:center;padding:8px;border:1px solid #253047;border-radius:10px;margin-top:6px}
+  .ghost-input{background:transparent;border:1px dashed #2a3550}
+  .hidden{display:none!important}
+</style>
+</head>
+<body>
+<header>
+  <div class="wrap" style="display:flex;align-items:center;justify-content:space-between;gap:12px">
+    <div style="display:flex;align-items:center;gap:10px">
+      <h1>⚡ Runware Studio</h1>
+      <span class="badge">Model: <strong>runware:101@1</strong></span>
+      <span class="badge" id="buildInfo">Build: 2025‑08‑08</span>
+    </div>
+    <div class="toolbar">
+      <button class="btn secondary" id="themeBtn" title="Toggle theme">Theme</button>
+      <button class="btn secondary" id="langBtn" title="Switch English/Hindi">EN/HI</button>
+      <button class="btn" id="exportBtn" title="Export settings & history">Export</button>
+      <input type="file" id="importFile" class="hidden" accept="application/json" />
+      <button class="btn secondary" id="importBtn" title="Import backup JSON">Import</button>
+      <span class="badge" id="quotaBadge" title="Approximate client‑side throttle">Quota: 20/min</span>
+    </div>
+  </div>
+</header>
+
+<main class="wrap grid">
+  <section class="card">
+    <div class="pane">
+      <h2 style="margin:0 0 6px" data-i18n="generate">Generate</h2>
+      <p class="muted small" data-i18n="safety">Use Proxy for production. Developer mode exposes key to the browser.</p>
+
+      <div class="help small">
+        <strong>Modes:</strong>
+        <ol style="margin:6px 0 0 16px; padding:0">
+          <li><b>Proxy mode (recommended):</b> Set your backend endpoint below. No API key in browser.</li>
+          <li><b>Developer mode (unsafe):</b> Paste API key below to test here. Do not deploy this mode.</li>
+        </ol>
+      </div>
+
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin:10px 0">
+        <button class="btn ghost" data-tab="t2i">Text → Image</button>
+        <button class="btn ghost" data-tab="i2i">Image → Image</button>
+        <button class="btn ghost" data-tab="up">Upscale</button>
+        <button class="btn ghost" data-tab="rm">BG Remove</button>
+        <button class="btn ghost" data-tab="ip">Inpaint</button>
+        <button class="btn ghost" data-tab="op">Outpaint</button>
+      </div>
+
+      <!-- T2I -->
+      <div class="tab" id="tab-t2i">
+        <label for="prompt">Prompt</label>
+        <textarea id="prompt" rows="4" placeholder="ultra‑realistic portrait of a sage meditating at dawn, dramatic rim light, 85mm, f1.4, cinematic"></textarea>
+        <div class="two">
+          <div class="chips" id="styleChips"></div>
+          <button class="btn secondary" id="addPreset">Save as preset</button>
+        </div>
+        <label for="negativePrompt">Negative prompt <span class="muted">(optional)</span></label>
+        <input id="negativePrompt" placeholder="low quality, blurry, deformed" />
+
+        <div class="row">
+          <div>
+            <label for="size">Size</label>
+            <select id="size">
+              <option value="1024x1024" selected>1024 × 1024 (1:1)</option>
+              <option value="1152x896">1152 × 896 (5:4)</option>
+              <option value="1344x768">1344 × 768 (16:9)</option>
+              <option value="896x1344">896 × 1344 (9:16)</option>
+              <option value="1536x896">1536 × 896 (≈17:10)</option>
+            </select>
+          </div>
+          <div>
+            <label for="results">Results</label>
+            <select id="results"><option>1</option><option selected>2</option><option>3</option><option>4</option></select>
+          </div>
+        </div>
+
+        <div class="row">
+          <div>
+            <label>Steps <span class="muted" id="stepsVal">28</span></label>
+            <input id="steps" type="range" min="1" max="60" value="28" />
+          </div>
+          <div>
+            <label>CFG <span class="muted" id="cfgVal">7.5</span></label>
+            <input id="cfg" type="range" min="0" max="20" value="7.5" step="0.5" />
+          </div>
+        </div>
+
+        <div class="row">
+          <div>
+            <label for="seed">Seed <span class="muted">(optional)</span></label>
+            <div style="display:flex;gap:8px;align-items:center">
+              <input id="seed" placeholder="e.g. 123456" />
+              <button class="btn ghost" id="randSeed" title="Random seed" aria-label="Random seed">🎲</button>
+              <span class="pill"><input id="lockSeed" type="checkbox" /> lock</span>
+            </div>
+          </div>
+          <div>
+            <label for="model">Model</label>
+            <input id="model" value="runware:101@1" />
+          </div>
+        </div>
+
+        <label>Queue multi‑prompts (one per line)</label>
+        <textarea id="queuePrompts" rows="2" class="ghost-input" placeholder="A line per prompt for batch"></textarea>
+        <div class="two">
+          <div class="bar" aria-label="Progress"><span id="progBar" style="width:0%"></span></div>
+          <span class="small muted" id="progTxt">0%</span>
+        </div>
+      </div>
+
+      <!-- I2I -->
+      <div class="tab" id="tab-i2i" hidden>
+        <label>Guide image</label>
+        <input id="i2iFile" type="file" accept="image/*" />
+        <label class="small muted">or Image URL (proxy-safe)</label>
+        <input id="i2iUrl" placeholder="https://..." />
+        <label>Prompt</label>
+        <textarea id="i2iPrompt" rows="3" placeholder="describe the transformation"></textarea>
+        <div class="row">
+          <div>
+            <label>Strength <span class="muted" id="i2iStrengthVal">0.7</span></label>
+            <input id="i2iStrength" type="range" min="0" max="1" step="0.05" value="0.7" />
+          </div>
+          <div>
+            <label>Output size</label>
+            <select id="i2iSize">
+              <option value="1024x1024" selected>1024 × 1024</option>
+              <option value="1344x768">1344 × 768</option>
+              <option value="896x1344">896 × 1344</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <!-- UPSCALE -->
+      <div class="tab" id="tab-up" hidden>
+        <label>Input image</label>
+        <input id="upFile" type="file" accept="image/*" />
+        <label class="small muted">or Image URL</label>
+        <input id="upUrl" placeholder="https://..." />
+        <div class="row">
+          <div>
+            <label>Factor</label>
+            <select id="upFactor"><option value="2">2×</option><option value="3">3×</option><option value="4">4×</option></select>
+          </div>
+          <div>
+            <label>Format</label>
+            <select id="upFormat"><option>JPG</option><option>PNG</option><option>WEBP</option></select>
+          </div>
+        </div>
+      </div>
+
+      <!-- BG REMOVE -->
+      <div class="tab" id="tab-rm" hidden>
+        <label>Input image</label>
+        <input id="rmFile" type="file" accept="image/*" />
+        <label class="small muted">or Image URL</label>
+        <input id="rmUrl" placeholder="https://..." />
+        <p class="muted small">Returns PNG with transparency. Best for products/portraits.</p>
+      </div>
+
+      <!-- INPAINT -->
+      <div class="tab" id="tab-ip" hidden>
+        <p class="muted small">Brush the region to modify. White = edit area, Black = keep.</p>
+        <div class="row">
+          <div>
+            <label>Base image</label>
+            <input id="ipFile" type="file" accept="image/*" />
+          </div>
+          <div>
+            <label>Brush size</label>
+            <input id="ipBrush" type="range" min="4" max="96" value="24" />
+          </div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+          <canvas id="ipCanvas" style="width:100%;border:1px solid #273041;border-radius:12px;background:#0b0f15"></canvas>
+          <canvas id="ipMask" style="width:100%;border:1px dashed #2a3550;border-radius:12px;background:#fff"></canvas>
+        </div>
+        <label>Prompt</label>
+        <textarea id="ipPrompt" rows="3" placeholder="what to paint inside mask"></textarea>
+        <div class="row">
+          <div>
+            <label>Output size</label>
+            <select id="ipSize">
+              <option value="1024x1024" selected>1024 × 1024</option>
+              <option value="1344x768">1344 × 768</option>
+              <option value="896x1344">896 × 1344</option>
+            </select>
+          </div>
+          <div>
+            <label>Guidance (CFG) <span class="muted" id="ipCfgVal">7.5</span></label>
+            <input id="ipCfg" type="range" min="0" max="20" step="0.5" value="7.5" />
+          </div>
+        </div>
+      </div>
+
+      <!-- OUTPAINT -->
+      <div class="tab" id="tab-op" hidden>
+        <label>Base image</label>
+        <input id="opFile" type="file" accept="image/*" />
+        <label>Prompt</label>
+        <textarea id="opPrompt" rows="3" placeholder="extend the scene ..."></textarea>
+        <div class="row">
+          <div>
+            <label>New size</label>
+            <select id="opSize">
+              <option value="1344x768">Expand 16:9</option>
+              <option value="1536x896">Wide</option>
+              <option value="896x1344">Tall 9:16</option>
+              <option value="1024x1024" selected>Square</option>
+            </select>
+          </div>
+          <div>
+            <label>Padding (%)</label>
+            <input id="opPad" type="range" min="5" max="40" value="15" />
+          </div>
+        </div>
+      </div>
+
+      <details>
+        <summary>Advanced</summary>
+        <div class="row" style="margin-top:10px">
+          <div>
+            <label for="proxyUrl">Backend Proxy URL <span class="muted">(recommended)</span></label>
+            <input id="proxyUrl" placeholder="https://your-domain.com/generate" />
+          </div>
+          <div>
+            <label for="apiKey">Developer Mode API Key <span class="muted">(unsafe)</span></label>
+            <input id="apiKey" type="password" placeholder="Paste Runware API key for demo" />
+          </div>
+        </div>
+        <div style="margin-top:8px" class="small muted">Keyboard: <span class="kbd">Cmd/Ctrl</span> + <span class="kbd">Enter</span> to run • <span class="kbd">Esc</span> to cancel</div>
+      </details>
+
+      <div class="status">
+        <span id="statusDot" class="dot"></span>
+        <span id="statusText" class="small muted">Idle</span>
+      </div>
+
+      <div style="margin-top:12px;display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+        <button class="btn" id="submitBtn">Run</button>
+        <button class="btn secondary" id="cancelBtn" title="Cancel current request" disabled>Cancel</button>
+        <button class="btn secondary" id="saveBtn" title="Save settings to this browser">Save</button>
+        <button class="btn secondary" id="clearBtn" title="Clear cached settings">Clear</button>
+      </div>
+    </div>
+  </section>
+
+  <section class="card">
+    <div class="pane">
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:12px">
+        <h2 style="margin:0 0 8px">Results</h2>
+        <div class="row" style="grid-template-columns: auto auto auto; gap:8px; align-items:center">
+          <label class="small muted">Grid</label>
+          <input id="gridCols" type="range" min="1" max="6" value="4" />
+          <span class="small muted" id="gridColsVal">4</span>
+        </div>
+      </div>
+      <div id="gallery" class="images" aria-live="polite"></div>
+      <p id="emptyState" class="muted small">No images yet. Choose a tab and click Run.</p>
+
+      <div style="margin-top:14px">
+        <h3 style="margin:0 0 4px;font-size:14px">History</h3>
+        <div id="history" class="queue"></div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  Built for preview • For production, proxy your key on a server · © <span id="year"></span>
+</footer>
+
+<dialog id="lightbox"><div class="lightbox"><img alt="preview" id="lightImg"><div style="display:flex;gap:8px;justify-content:flex-end;margin-top:10px"><button class="btn secondary" id="openTab">Open</button><button class="btn" id="closeLb">Close</button></div></div></dialog>
+
+<script>
+// ===== Utilities =====
+const qs = s => document.querySelector(s);
+const qsa = s => [...document.querySelectorAll(s)];
+const clamp = (n,min,max)=>Math.max(min,Math.min(max,n));
+const sleep = (ms)=>new Promise(r=>setTimeout(r,ms));
+const isFiniteNum = (v)=>Number.isFinite(Number(v));
+
+// ===== Global State =====
+let currentAbort = null;
+let presets = [
+  {name:'Cinematic', text:'cinematic lighting, 85mm lens, shallow depth of field, dramatic rim light, film grain subtle'},
+  {name:'Photoreal', text:'highly detailed, photorealistic, natural colors, soft lighting, 50mm, f1.8'},
+  {name:'Illustration', text:'clean vector illustration, flat colors, smooth gradients, crisp outlines'},
+  {name:'Spiritual', text:'divine aura, soft sunrise glow, sacred ambience, satvik color palette, serene composition'}
+];
+let history = []; // {time,url,meta}
+
+// ===== Theme & Lang =====
+const applyTheme = t => document.documentElement.setAttribute('data-theme', t);
+const toggleTheme = ()=> {
+  const cur = document.documentElement.getAttribute('data-theme');
+  applyTheme(cur==='light' ? 'dark' : 'light');
+  localStorage.setItem('rw_theme', document.documentElement.getAttribute('data-theme'));
+};
+const i18n = {
+  en: { generate:'Generate', safety:'Use Proxy for production. Developer mode exposes key to the browser.' },
+  hi: { generate:'चित्र बनाएं', safety:'प्रोडक्शन के लिए प्रॉक्सी का प्रयोग करें। डेव मोड में कुंजी ब्राउज़र में रहती है।' }
+};
+let lang = localStorage.getItem('rw_lang')||'en';
+function applyLang(){
+  qsa('[data-i18n]').forEach(el=>{
+    const key = el.getAttribute('data-i18n');
+    el.textContent = (i18n[lang] && i18n[lang][key]) || el.textContent;
+  });
+}
+
+// ===== Boot =====
+(function init(){
+  const savedTheme = localStorage.getItem('rw_theme')||'dark';
+  applyTheme(savedTheme);
+  applyLang();
+  qs('#year').textContent = new Date().getFullYear();
+  bindUI();
+  buildStyleChips();
+  restoreState();
+  showTab(localStorage.getItem('rw_tab')||'t2i');
+})();
+
+// ===== UI Bindings =====
+function bindUI(){
+  qs('#themeBtn').onclick = toggleTheme;
+  qs('#langBtn').onclick = ()=>{ lang = (lang==='en'?'hi':'en'); localStorage.setItem('rw_lang',lang); applyLang(); };
+  qs('#exportBtn').onclick = exportAll;
+  qs('#importBtn').onclick = ()=> qs('#importFile').click();
+  qs('#importFile').addEventListener('change', importAll);
+
+  qsa('[data-tab]').forEach(b=> b.onclick = ()=> showTab(b.dataset.tab));
+
+  // sliders text
+  qs('#steps').addEventListener('input', ()=> qs('#stepsVal').textContent = qs('#steps').value);
+  qs('#cfg').addEventListener('input', ()=> qs('#cfgVal').textContent = qs('#cfg').value);
+  const ipCfg = qs('#ipCfg'); if(ipCfg) ipCfg.addEventListener('input', ()=> qs('#ipCfgVal').textContent = ipCfg.value);
+
+  // grid density
+  const grid = qs('#gridCols'); const gridVal = qs('#gridColsVal');
+  grid.addEventListener('input', ()=>{ document.documentElement.style.setProperty('--gridCols', grid.value); gridVal.textContent = grid.value; });
+
+  // seed tools
+  qs('#randSeed').onclick = ()=> qs('#seed').value = Math.floor(Math.random()*2**31);
+
+  // settings
+  qs('#saveBtn').onclick = saveState;
+  qs('#clearBtn').onclick = ()=>{ localStorage.removeItem('rw_state'); alert('Cleared local settings & history.'); };
+
+  // submit
+  qs('#submitBtn').addEventListener('click', runActiveTab);
+  qs('#cancelBtn').addEventListener('click', cancelCurrent);
+
+  // shortcuts
+  window.addEventListener('keydown', (e)=>{
+    if ((e.metaKey||e.ctrlKey) && e.key === 'Enter') { e.preventDefault(); runActiveTab(); }
+    if (e.key === 'Escape') { cancelCurrent(); }
+  });
+
+  // lightbox
+  qs('#closeLb').onclick = ()=> qs('#lightbox').close();
+}
+
+function buildStyleChips(){
+  const wrap = qs('#styleChips'); wrap.innerHTML = '';
+  presets.forEach(p=>{
+    const b = document.createElement('button'); b.className='chip-toggle'; b.textContent = p.name; b.onclick = ()=> togglePreset(b,p.text);
+    wrap.appendChild(b);
+  });
+  qs('#addPreset').onclick = ()=>{
+    const name = prompt('Preset name?'); if(!name) return;
+    const text = prompt('Preset text?'); if(!text) return;
+    presets.push({name,text}); saveState(); buildStyleChips();
+  };
+}
+
+function togglePreset(el, text){
+  el.classList.toggle('active');
+  const prompt = qs('#prompt');
+  if(el.classList.contains('active')){
+    prompt.value = (prompt.value + ' ' + text).trim();
+  } else {
+    // remove text occurrence once
+    prompt.value = prompt.value.replace(text,'').replace(/\s{2,}/g,' ').trim();
+  }
+}
+
+// ===== Tabs =====
+const tabs = ['t2i','i2i','up','rm','ip','op'];
+function showTab(id){
+  tabs.forEach(t=> qs('#tab-'+t).hidden = (t!==id));
+  qsa('[data-tab]').forEach(b=> b.classList.toggle('secondary', b.dataset.tab!==id));
+  localStorage.setItem('rw_tab', id);
+}
+
+// ===== State (save/restore) =====
+function saveState(){
+  const st = {
+    proxyUrl: qs('#proxyUrl').value.trim(),
+    apiKey: qs('#apiKey').value.trim(),
+    model: qs('#model').value.trim(),
+    steps: qs('#steps').value, cfg: qs('#cfg').value, results: qs('#results').value,
+    size: qs('#size').value, lockSeed: qs('#lockSeed').checked,
+    presets, history, grid: qs('#gridCols').value
+  };
+  localStorage.setItem('rw_state', JSON.stringify(st));
+  alert('Saved!');
+}
+function restoreState(){
+  try{
+    const st = JSON.parse(localStorage.getItem('rw_state')||'{}');
+    if(st.proxyUrl) qs('#proxyUrl').value = st.proxyUrl;
+    if(st.apiKey) qs('#apiKey').value = st.apiKey;
+    if(st.model) qs('#model').value = st.model;
+    if(st.steps) qs('#steps').value = st.steps, qs('#stepsVal').textContent = st.steps;
+    if(st.cfg) qs('#cfg').value = st.cfg, qs('#cfgVal').textContent = st.cfg;
+    if(st.results) qs('#results').value = st.results;
+    if(st.size) qs('#size').value = st.size;
+    qs('#lockSeed').checked = !!st.lockSeed;
+    if(Array.isArray(st.presets) && st.presets.length){ presets = st.presets; buildStyleChips(); }
+    if(Array.isArray(st.history)) { history = st.history; renderHistory(); }
+    if(st.grid){ qs('#gridCols').value = st.grid; document.documentElement.style.setProperty('--gridCols', st.grid); qs('#gridColsVal').textContent = st.grid; }
+  }catch(e){}
+}
+
+async function exportAll(){
+  const data = {
+    version: document.documentElement.dataset.version,
+    theme: document.documentElement.getAttribute('data-theme'),
+    lang, presets, history,
+    state: JSON.parse(localStorage.getItem('rw_state')||'{}')
+  };
+  const blob = new Blob([JSON.stringify(data,null,2)], {type:'application/json'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a'); a.href=url; a.download='runware-studio-backup.json'; a.click(); URL.revokeObjectURL(url);
+}
+
+function importAll(e){
+  const f = e.target.files[0]; if(!f) return; const fr = new FileReader();
+  fr.onload = ()=>{
+    try{
+      const j = JSON.parse(fr.result);
+      if(j?.state) localStorage.setItem('rw_state', JSON.stringify(j.state));
+      if(j?.history) history = j.history;
+      if(j?.presets) presets = j.presets;
+      buildStyleChips(); renderHistory(); restoreState(); alert('Imported.');
+    }catch(err){ alert('Invalid JSON.'); }
+  };
+  fr.readAsText(f);
+}
+
+// ===== Cancel =====
+function cancelCurrent(){ if(currentAbort){ currentAbort.abort(); currentAbort = null; setBusy(false,'Canceled'); } }
+
+// ===== Busy/Status =====
+function setBusy(b, msg){
+  qs('#submitBtn').disabled = b; qs('#cancelBtn').disabled = !b;
+  qs('#statusDot').className = 'dot' + (b? '' : ' ok');
+  qs('#statusText').innerHTML = b ? '<span class="spinner"></span> '+(msg||'Running…') : (msg||'Ready');
+}
+
+function setProgress(p){
+  p = clamp(p,0,100);
+  qs('#progBar').style.width = p+'%';
+  qs('#progTxt').textContent = p+'%';
+}
+
+// ===== Run Dispatcher =====
+async function runActiveTab(){
+  const tab = localStorage.getItem('rw_tab')||'t2i';
+  try{
+    if(tab==='t2i') return runT2I();
+    if(tab==='i2i') return runI2I();
+    if(tab==='up')  return runUpscale();
+    if(tab==='rm')  return runBgRemove();
+    if(tab==='ip')  return runInpaint();
+    if(tab==='op')  return runOutpaint();
+  }catch(err){
+    alert('Failed: '+(err?.message||err));
+  }
+}
+
+// ===== Core Calls =====
+async function callProxy(url, payload, signal){
+  const r = await fetch(url, { method:'POST', headers:{ 'Content-Type':'application/json' }, body: JSON.stringify(payload), signal });
+  const j = await r.json().catch(()=>({ok:false,error:'Bad JSON'}));
+  if(!r.ok || !j?.ok) throw new Error(j?.error || ('Proxy '+r.status));
+  return j;
+}
+
+async function runUpload(apiKey, source, signal){
+  let imagePayload = null;
+  if(source instanceof File){ imagePayload = await fileToDataURI(source); }
+  else { imagePayload = source; }
+  const body = [{ taskType:'imageUpload', taskUUID: crypto.randomUUID(), image: imagePayload }];
+  const r = await fetch('https://api.runware.ai/v1', { method:'POST', headers:{ 'Content-Type':'application/json', 'Authorization':'Bearer '+apiKey }, body: JSON.stringify(body), signal });
+  const j = await r.json(); if(!r.ok || !j?.data) throw new Error('Upload failed');
+  const item = (j.data||[]).find(x=>x.taskType==='imageUpload')||{}; return item.imageUUID||item.imageUuid||item.uuid;
+}
+
+async function runTasks(apiKey, payloads, signal, retry=2){
+  // payloads: array of task objects
+  let attempt=0, wait=600;
+  while(true){
+    attempt++;
+    const r = await fetch('https://api.runware.ai/v1', { method:'POST', headers:{ 'Content-Type':'application/json', 'Authorization':'Bearer '+apiKey }, body: JSON.stringify(payloads), signal });
+    let j=null; try{ j = await r.json(); }catch(e){}
+    if(r.ok && j?.data) return j.data;
+    if(attempt<=retry && (r.status===429 || (r.status>=500&&r.status<600))){ await sleep(wait); wait=Math.floor(wait*1.6); continue; }
+    throw new Error('Runware '+r.status+' '+(j?.error||''));
+  }
+}
+
+function parseImages(data, type){
+  return (data||[]).filter(x=>x.taskType===type && x.imageURL).map(x=>x.imageURL);
+}
+
+// ===== Render helpers =====
+function renderImages(urls, meta){
+  const gallery = qs('#gallery');
+  if(!urls.length){ qs('#emptyState').classList.remove('hidden'); return; }
+  qs('#emptyState').classList.add('hidden');
+  urls.forEach((u,i)=>{
+    const wrap = document.createElement('div'); wrap.className='tile';
+    const img = new Image(); img.loading='lazy'; img.decoding='async'; img.alt='Result '+(i+1); img.src=u; img.onclick=()=>openLightbox(u);
+    const tools = document.createElement('div'); tools.className='tools';
+    const dl = document.createElement('a'); dl.href=u; dl.download=`runware_${Date.now()}_${i+1}.jpg`; dl.className='chip'; dl.textContent='Download';
+    const open = document.createElement('a'); open.href=u; open.target='_blank'; open.rel='noopener'; open.className='chip'; open.textContent='Open';
+    const copy = document.createElement('button'); copy.className='chip btn'; copy.textContent='Copy URL'; copy.onclick=()=>{ navigator.clipboard.writeText(u); };
+    const remix = document.createElement('button'); remix.className='chip btn'; remix.textContent='Use as seed'; remix.onclick=()=> useAsSeed(u, meta);
+    tools.append(dl, open, copy, remix); wrap.append(img, tools); gallery.prepend(wrap);
+  });
+}
+
+function openLightbox(url){ qs('#lightImg').src=url; qs('#openTab').onclick=()=> window.open(url,'_blank','noopener'); qs('#lightbox').showModal(); }
+
+function addHistory(entry){ // {url, meta}
+  history.unshift({ time: Date.now(), ...entry });
+  if(history.length>100) history.pop();
+  renderHistory(); saveState();
+}
+function renderHistory(){
+  const h = qs('#history'); h.innerHTML = '';
+  history.forEach((it,idx)=>{
+    const d = document.createElement('div'); d.className='item';
+    const left = document.createElement('div'); left.style.display='flex'; left.style.gap='10px'; left.style.alignItems='center';
+    const thumb = new Image(); thumb.src = it.url; thumb.width=44; thumb.height=44; thumb.style.borderRadius='8px'; thumb.style.objectFit='cover';
+    const meta = document.createElement('div'); meta.className='small muted'; meta.textContent = new Date(it.time).toLocaleString();
+    left.append(thumb, meta);
+    const actions = document.createElement('div');
+    const rerun = document.createElement('button'); rerun.className='chip btn'; rerun.textContent='Re-run'; rerun.onclick=()=> rerunFromMeta(it.meta);
+    const copy = document.createElement('button'); copy.className='chip btn'; copy.textContent='Copy JSON'; copy.onclick=()=> navigator.clipboard.writeText(JSON.stringify(it.meta,null,2));
+    const del = document.createElement('button'); del.className='chip btn'; del.textContent='Delete'; del.onclick=()=>{ history.splice(idx,1); renderHistory(); saveState(); };
+    actions.append(rerun, copy, del);
+    d.append(left, actions); h.appendChild(d);
+  });
+}
+
+function useAsSeed(url, meta){
+  // Set seed fixed and copy prompt
+  qs('#prompt').value = meta.prompt||qs('#prompt').value;
+  qs('#seed').value = Math.floor(Math.random()*2**31); // seed from URL not provided by API; we randomize or user can lock
+  qs('#lockSeed').checked = true;
+  alert('Prompt loaded and seed locked. You can re-run for variations.');
+}
+
+async function rerunFromMeta(meta){
+  // simple path: place into UI and run appropriate tab
+  if(meta.mode==='t2i'){
+    showTab('t2i');
+    qs('#prompt').value = meta.prompt||''; qs('#negativePrompt').value = meta.negativePrompt||'';
+    qs('#size').value = `${meta.width}x${meta.height}`; qs('#results').value = meta.results||2;
+    qs('#steps').value = meta.steps||28; qs('#cfg').value = meta.cfg||7.5; qs('#model').value = meta.model||'runware:101@1';
+    qs('#stepsVal').textContent = qs('#steps').value; qs('#cfgVal').textContent = qs('#cfg').value;
+    return runT2I();
+  }
+  if(meta.mode==='i2i'){
+    showTab('i2i');
+    qs('#i2iUrl').value = meta.seedImage||''; qs('#i2iPrompt').value = meta.prompt||'';
+    qs('#i2iSize').value = `${meta.width}x${meta.height}`; qs('#i2iStrength').value = meta.strength||0.7; qs('#i2iStrengthVal').textContent = qs('#i2iStrength').value;
+    return runI2I();
+  }
+  alert('Loaded params. Please click Run.');
+}
+
+// ===== File helpers =====
+function fileToDataURI(file){ return new Promise((res,rej)=>{ const fr=new FileReader(); fr.onload=()=>res(fr.result); fr.onerror=rej; fr.readAsDataURL(file); }); }
+
+// ===== T2I =====
+async function runT2I(){
+  const prompt = qs('#prompt').value.trim(); if(!prompt) { alert('Prompt required'); return; }
+  const negativePrompt = qs('#negativePrompt').value.trim();
+  const [w,h] = qs('#size').value.split('x').map(v=>parseInt(v,10));
+  const steps = parseInt(qs('#steps').value,10)||28; const cfg = parseFloat(qs('#cfg').value||'7.5');
+  const results = parseInt(qs('#results').value,10)||2; let seed = parseInt(qs('#seed').value,10);
+  const model = (qs('#model').value||'runware:101@1').trim();
+  const lock = qs('#lockSeed').checked; if(lock && !Number.isFinite(seed)) { seed = Math.floor(Math.random()*2**31); qs('#seed').value = seed; }
+
+  const proxyUrl = qs('#proxyUrl').value.trim(); const apiKey = qs('#apiKey').value.trim();
+  const meta = { mode:'t2i', prompt, negativePrompt, width:w, height:h, steps, cfg, results, model, seed };
+
+  setBusy(true); setProgress(0); qs('#emptyState').classList.add('hidden');
+  currentAbort = new AbortController();
+
+  // Support batch queue
+  const lines = qs('#queuePrompts').value.split(/\n+/).map(s=>s.trim()).filter(Boolean);
+  const queue = lines.length ? lines : [prompt];
+  let allUrls = [];
+
+  try{
+    for(let i=0;i<queue.length;i++){
+      const p = queue[i];
+      const payload = [{
+        taskType:'imageInference', taskUUID:crypto.randomUUID(), outputType:'URL', outputFormat:'JPG',
+        positivePrompt:p, negativePrompt:negativePrompt||undefined, width:w, height:h, steps, CFGScale:cfg, numberResults:results, model,
+        ...(Number.isFinite(seed) ? { seed } : {})
+      }];
+
+      if(proxyUrl && !apiKey){
+        const j = await callProxy(proxyUrl, { ...meta, prompt:p }, currentAbort.signal);
+        const urls = (j.images||[]).map(x=>x.imageURL||x);
+        renderImages(urls, { ...meta, prompt:p });
+        allUrls.push(...urls);
+      } else {
+        if(!apiKey) throw new Error('API key or Proxy URL required.');
+        const data = await runTasks(apiKey, payload, currentAbort.signal);
+        const urls = parseImages(data,'imageInference');
+        renderImages(urls, { ...meta, prompt:p });
+        allUrls.push(...urls);
+      }
+      setProgress(Math.round(((i+1)/queue.length)*100));
+      // add to history
+      if(allUrls[allUrls.length-1]) addHistory({ url: allUrls[allUrls.length-1], meta: { ...meta, prompt:p } });
+    }
+  } catch(err){ if(err.name!=='AbortError'){ alert(err.message||err); } }
+  finally { setBusy(false); currentAbort=null; }
+}
+
+// ===== I2I =====
+async function runI2I(){
+  const prompt = qs('#i2iPrompt').value.trim();
+  const strength = parseFloat(qs('#i2iStrength').value||'0.7');
+  const [w,h] = qs('#i2iSize').value.split('x').map(v=>parseInt(v,10));
+  const file = qs('#i2iFile').files[0]; const url = qs('#i2iUrl').value.trim();
+  if(!file && !url){ alert('Provide guide image'); return; }
+
+  const proxyUrl = qs('#proxyUrl').value.trim(); const apiKey = qs('#apiKey').value.trim();
+  const model = (qs('#model').value||'runware:101@1').trim();
+  const meta = { mode:'i2i', prompt, width:w, height:h, strength, model, seedImage:url };
+  setBusy(true); currentAbort=new AbortController(); setProgress(0);
+
+  try{
+    if(proxyUrl && !apiKey){
+      const j = await callProxy(proxyUrl, { ...meta }, currentAbort.signal);
+      const urls = (j.images||[]).map(x=>x.imageURL||x); renderImages(urls, meta); if(urls[0]) addHistory({ url: urls[0], meta });
+    } else {
+      if(!apiKey) throw new Error('API key required for local upload.');
+      const seedImage = file ? await runUpload(apiKey, file, currentAbort.signal) : url;
+      const payload = [{ taskType:'imageInference', taskUUID:crypto.randomUUID(), outputType:'URL', outputFormat:'JPG', positivePrompt: prompt||'__BLANK__', seedImage, width:w, height:h, strength, model }];
+      const data = await runTasks(apiKey, payload, currentAbort.signal);
+      const urls = parseImages(data,'imageInference'); renderImages(urls, { ...meta, seedImage }); if(urls[0]) addHistory({ url: urls[0], meta: { ...meta, seedImage } });
+    }
+  } catch(err){ if(err.name!=='AbortError') alert(err.message||err); }
+  finally{ setBusy(false); currentAbort=null; setProgress(100); }
+}
+
+// ===== Upscale =====
+async function runUpscale(){
+  const file = qs('#upFile').files[0]; const url = qs('#upUrl').value.trim();
+  const factor = parseInt(qs('#upFactor').value,10); const format = qs('#upFormat').value;
+  if(!file && !url){ alert('Provide an image'); return; }
+  const proxyUrl = qs('#proxyUrl').value.trim(); const apiKey = qs('#apiKey').value.trim();
+  setBusy(true); currentAbort=new AbortController();
+  try{
+    if(proxyUrl && !apiKey){ throw new Error('Add a /upscale proxy endpoint to use proxy mode here.'); }
+    if(!apiKey) throw new Error('API key required in preview for upscaling.');
+    const inputImage = file? await runUpload(apiKey, file, currentAbort.signal): url;
+    const payload = [{ taskType:'imageUpscale', taskUUID:crypto.randomUUID(), inputImage, outputType:'URL', outputFormat:format, upscaleFactor:factor }];
+    const data = await runTasks(apiKey, payload, currentAbort.signal);
+    const urls = parseImages(data,'imageUpscale'); renderImages(urls, { mode:'up', factor, format, inputImage }); if(urls[0]) addHistory({ url: urls[0], meta: { mode:'up', factor, format, inputImage } });
+  } catch(err){ if(err.name!=='AbortError') alert(err.message||err); }
+  finally{ setBusy(false); currentAbort=null; }
+}
+
+// ===== BG Remove =====
+async function runBgRemove(){
+  const file = qs('#rmFile').files[0]; const url = qs('#rmUrl').value.trim();
+  if(!file && !url){ alert('Provide an image'); return; }
+  const proxyUrl = qs('#proxyUrl').value.trim(); const apiKey = qs('#apiKey').value.trim();
+  setBusy(true); currentAbort=new AbortController();
+  try{
+    if(proxyUrl && !apiKey){ throw new Error('Add a /bg-remove proxy endpoint to use proxy mode here.'); }
+    if(!apiKey) throw new Error('API key required in preview for BG removal.');
+    const inputImage = file? await runUpload(apiKey, file, currentAbort.signal): url;
+    const payload = [{ taskType:'imageBackgroundRemoval', taskUUID:crypto.randomUUID(), inputImage, outputType:'URL', outputFormat:'PNG' }];
+    const data = await runTasks(apiKey, payload, currentAbort.signal);
+    const urls = parseImages(data,'imageBackgroundRemoval'); renderImages(urls, { mode:'rm', inputImage }); if(urls[0]) addHistory({ url: urls[0], meta: { mode:'rm', inputImage } });
+  } catch(err){ if(err.name!=='AbortError') alert(err.message||err); }
+  finally{ setBusy(false); currentAbort=null; }
+}
+
+// ===== Inpaint (basic brush → mask) =====
+let ipImg = null, ipCanvas, ipMask, ipCtx, ipMaskCtx, ipScale=1, ipBrush=24, ipDrawing=false;
+function setupInpaintCanvas(img){
+  ipCanvas = qs('#ipCanvas'); ipMask = qs('#ipMask'); ipCtx = ipCanvas.getContext('2d'); ipMaskCtx = ipMask.getContext('2d');
+  const maxW = ipCanvas.clientWidth; const ratio = img.width/img.height; const W = maxW; const H = Math.round(W/ratio);
+  ipCanvas.width=W; ipCanvas.height=H; ipMask.width=W; ipMask.height=H; ipScale = img.width/W;
+  ipCtx.drawImage(img,0,0,W,H); ipMaskCtx.fillStyle='#000'; ipMaskCtx.fillRect(0,0,W,H);
+}
+qs('#ipFile').addEventListener('change', async (e)=>{
+  const f=e.target.files[0]; if(!f) return; const dataURL = await fileToDataURI(f); const img=new Image(); img.onload=()=>{ ipImg=img; setupInpaintCanvas(img); }; img.src=dataURL;
+});
+qs('#ipBrush').addEventListener('input', e=> ipBrush = parseInt(e.target.value,10));
+['mousedown','touchstart'].forEach(ev=> qs('#tab-ip').addEventListener(ev, startDraw));
+['mousemove','touchmove'].forEach(ev=> qs('#tab-ip').addEventListener(ev, drawMask));
+['mouseup','mouseleave','touchend','touchcancel'].forEach(ev=> qs('#tab-ip').addEventListener(ev, endDraw));
+function getXY(ev){
+  const b = ipMask.getBoundingClientRect();
+  const x = (ev.touches? ev.touches[0].clientX: ev.clientX) - b.left;
+  const y = (ev.touches? ev.touches[0].clientY: ev.clientY) - b.top;
+  return {x,y};
+}
+function startDraw(ev){ if(!ipMask) return; ipDrawing=true; drawMask(ev); }
+function drawMask(ev){ if(!ipDrawing||!ipMask) return; ev.preventDefault(); const {x,y}=getXY(ev);
+  ipMaskCtx.fillStyle = '#fff'; ipMaskCtx.beginPath(); ipMaskCtx.arc(x,y, ipBrush/2, 0, Math.PI*2); ipMaskCtx.fill(); }
+function endDraw(){ ipDrawing=false; }
+
+async function runInpaint(){
+  if(!ipCanvas || !ipMask){ alert('Load an image and paint a mask'); return; }
+  const prompt = qs('#ipPrompt').value.trim(); const [w,h] = qs('#ipSize').value.split('x').map(v=>parseInt(v,10));
+  const cfg = parseFloat(qs('#ipCfg').value||'7.5'); const model=(qs('#model').value||'runware:101@1').trim();
+  const proxyUrl=qs('#proxyUrl').value.trim(); const apiKey=qs('#apiKey').value.trim();
+  const baseData = ipCanvas.toDataURL('image/png'); const maskData = ipMask.toDataURL('image/png');
+  setBusy(true); currentAbort=new AbortController();
+  try{
+    if(proxyUrl && !apiKey){
+      // Expect your proxy to support: { mode:'inpaint', baseImage, maskImage, prompt, width, height, cfg, model }
+      const j = await callProxy(proxyUrl, { mode:'inpaint', baseImage:baseData, maskImage:maskData, prompt, width:w, height:h, cfg, model }, currentAbort.signal);
+      const urls = (j.images||[]).map(x=>x.imageURL||x); renderImages(urls, { mode:'inpaint', prompt, width:w, height:h, cfg, model }); if(urls[0]) addHistory({ url: urls[0], meta: { mode:'inpaint', prompt, width:w, height:h, cfg, model } });
+    } else {
+      if(!apiKey) throw new Error('API key required for inpainting in preview.');
+      // Two-step: upload both images, then inference with seedImage + maskImage
+      const baseUUID = await runUpload(apiKey, baseData, currentAbort.signal);
+      const maskUUID = await runUpload(apiKey, maskData, currentAbort.signal);
+      const payload=[{ taskType:'imageInference', taskUUID:crypto.randomUUID(), outputType:'URL', outputFormat:'JPG', positivePrompt: prompt||'__BLANK__', seedImage: baseUUID, maskImage: maskUUID, width:w, height:h, CFGScale: cfg, model }];
+      const data = await runTasks(apiKey, payload, currentAbort.signal);
+      const urls = parseImages(data,'imageInference'); renderImages(urls, { mode:'inpaint', prompt, width:w, height:h, cfg, model }); if(urls[0]) addHistory({ url: urls[0], meta: { mode:'inpaint', prompt, width:w, height:h, cfg, model } });
+    }
+  } catch(err){ if(err.name!=='AbortError') alert(err.message||err); }
+  finally{ setBusy(false); currentAbort=null; }
+}
+
+// ===== Outpaint (simple pad approach) =====
+async function runOutpaint(){
+  const file = qs('#opFile').files[0]; if(!file){ alert('Pick a base image'); return; }
+  const prompt = qs('#opPrompt').value.trim(); const [w,h] = qs('#opSize').value.split('x').map(v=>parseInt(v,10));
+  const pad = parseInt(qs('#opPad').value,10); const model=(qs('#model').value||'runware:101@1').trim();
+  const proxyUrl=qs('#proxyUrl').value.trim(); const apiKey=qs('#apiKey').value.trim();
+  setBusy(true); currentAbort=new AbortController();
+  try{
+    if(proxyUrl && !apiKey){
+      const base64 = await fileToDataURI(file);
+      const j = await callProxy(proxyUrl, { mode:'outpaint', baseImage:base64, prompt, width:w, height:h, pad, model }, currentAbort.signal);
+      const urls = (j.images||[]).map(x=>x.imageURL||x); renderImages(urls, { mode:'outpaint', prompt, width:w, height:h, pad, model }); if(urls[0]) addHistory({ url: urls[0], meta: { mode:'outpaint', prompt, width:w, height:h, pad, model } });
+    } else {
+      if(!apiKey) throw new Error('API key required for outpainting in preview.');
+      const baseUUID = await runUpload(apiKey, file, currentAbort.signal);
+      const payload=[{ taskType:'imageInference', taskUUID:crypto.randomUUID(), outputType:'URL', outputFormat:'JPG', positivePrompt: prompt||'__BLANK__', seedImage: baseUUID, width:w, height:h, outpaint: { paddingPercent: pad }, model }];
+      const data = await runTasks(apiKey, payload, currentAbort.signal);
+      const urls = parseImages(data,'imageInference'); renderImages(urls, { mode:'outpaint', prompt, width:w, height:h, pad, model }); if(urls[0]) addHistory({ url: urls[0], meta: { mode:'outpaint', prompt, width:w, height:h, pad, model } });
+    }
+  } catch(err){ if(err.name!=='AbortError') alert(err.message||err); }
+  finally{ setBusy(false); currentAbort=null; }
+}
+</script>
+</body>
+</html>
